@@ -1,9 +1,0 @@
-﻿ALTER TABLE [Playlist] DROP CONSTRAINT [Playlist_FK_PUser];
-ALTER TABLE [Track] DROP CONSTRAINT [TRACK_FK_Playlist];
-ALTER TABLE [PUser] DROP CONSTRAINT [PK_PUser];
-ALTER TABLE [Playlist] DROP CONSTRAINT [PK_Playlist];
-ALTER TABLE [Track] DROP CONSTRAINT [PK_Track];
-
-DROP Table [PUser];
-DROP Table [Playlist];
-DROP TABLE [Track];
