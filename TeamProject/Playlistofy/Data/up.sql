@@ -110,6 +110,14 @@ CREATE TABLE [AlbumArtistMap]
 )
 GO
 
+CREATE TABLE [FollowedPlaylist]
+(
+    [Id] INT NOT NULL IDENTITY (1,1),
+    [PlaylistId] NVARCHAR(450),
+    [PUserId] NVARCHAR(450)
+)
+GO
+
 
 ALTER TABLE [PUser] ADD CONSTRAINT [PK_PUser] PRIMARY KEY CLUSTERED ([Id] ASC)
 GO

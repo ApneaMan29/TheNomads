@@ -164,5 +164,12 @@ namespace Playlistofy.Controllers
             viewModel._PlaylistsDB = await userPlaylists.ToListAsync();
             return View("WebPlayer", viewModel);
         }
+
+        //public Task<IActionResult> FollowPlaylist(string id)
+        //{
+            
+            
+        //}
+
     }
 }
