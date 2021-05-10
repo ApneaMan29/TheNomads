@@ -165,11 +165,18 @@ namespace Playlistofy.Controllers
             return View("WebPlayer", viewModel);
         }
 
-        //public Task<IActionResult> FollowPlaylist(string id)
-        //{
-            
-            
-        //}
+        public async Task<IActionResult> FollowPlaylist(string id)
+        {
+            IdentityUser usr = await GetCurrentUserAsync();
+            var likedPlaylist = new FollowedPlaylist();
+
+            likedPlaylist.PUserId = usr.Id;
+            likedPlaylist.PlaylistId = id;
+
+
+
+            return ;
+        }
 
     }
 }

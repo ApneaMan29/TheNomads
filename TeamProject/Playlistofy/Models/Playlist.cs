@@ -23,5 +23,6 @@ namespace Playlistofy.Models
 
         public virtual PUser User { get; set; }
         public virtual ICollection<PlaylistTrackMap> PlaylistTrackMaps { get; set; }
+        public virtual ICollection<FollowedPlaylist> FollowedPlaylists { get; set; }
     }
 }

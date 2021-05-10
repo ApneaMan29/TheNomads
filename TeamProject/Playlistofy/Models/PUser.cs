@@ -34,5 +34,6 @@ namespace Playlistofy.Models
         public string Href { get; set; }
 
         public virtual ICollection<Playlist> Playlists { get; set; }
+        public virtual ICollection<FollowedPlaylist> FollowedPlaylists { get; set; }
     }
 }

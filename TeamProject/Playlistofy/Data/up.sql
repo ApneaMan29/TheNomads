@@ -118,6 +118,15 @@ CREATE TABLE [FollowedPlaylist]
 )
 GO
 
+ALTER TABLE [FollowedPlaylist] ADD CONSTRAINT [PK_FollowedPlaylist] PRIMARY KEY CLUSTERED ([Id]ASC)
+GO
+
+ALTER TABLE [FollowedPlaylist] ADD CONSTRAINT [FollowedPlaylist_FK_Playlist] FOREIGN KEY ([PlaylistID]) REFERENCES [Playlist] ([Id])
+GO
+
+ALTER TABLE [FollowedPlaylist] ADD CONSTRAINT [FollowedPlaylist_FK_PUser] FOREIGN KEY ([PUserId]) REFERENCES [PUser] ([Id])
+GO
+
 
 ALTER TABLE [PUser] ADD CONSTRAINT [PK_PUser] PRIMARY KEY CLUSTERED ([Id] ASC)
 GO
