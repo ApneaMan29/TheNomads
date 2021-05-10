@@ -68,5 +68,15 @@ namespace Playlistofy.Data.Concrete
             var map = trackMaps.Where(i => i.TrackId == tId && i.PlaylistId == pId).FirstOrDefault();
             return map;
         }
+
+        public async Task AddTrackPlaylistMap(string pUId, string pId)
+        {
+            _context.Add(new FollowedPlaylist()
+            {
+                PUserId = pUId,
+                PlaylistId = pId
+            });
+            await _context.SaveChangesAsync();
+        }
     }
 }

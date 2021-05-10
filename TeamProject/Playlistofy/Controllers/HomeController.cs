@@ -165,7 +165,7 @@ namespace Playlistofy.Controllers
             return View("WebPlayer", viewModel);
         }
 
-        public async Task<IActionResult> FollowPlaylist(string id)
+        public async void FollowPlaylist(string id)
         {
             IdentityUser usr = await GetCurrentUserAsync();
             var likedPlaylist = new FollowedPlaylist();
@@ -173,9 +173,7 @@ namespace Playlistofy.Controllers
             likedPlaylist.PUserId = usr.Id;
             likedPlaylist.PlaylistId = id;
 
-
-
-            return ;
+            await _pRepo.AddTrackPlaylistMap(usr.Id, id);
         }
 
     }
