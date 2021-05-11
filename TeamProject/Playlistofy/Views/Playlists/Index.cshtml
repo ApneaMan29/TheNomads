@@ -48,9 +48,12 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.DisplayName)
-            </td>
+            @if (item.User != null)
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.DisplayName)
+                </td>
+            }
             <td>
                 <!--<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |-->
                 <a asp-action="DetailsFromSearch" asp-route-id="@item.Id">Details</a> |

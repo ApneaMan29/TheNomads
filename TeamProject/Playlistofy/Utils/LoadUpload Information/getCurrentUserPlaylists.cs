@@ -67,6 +67,7 @@ namespace Playlistofy.Utils
                     Href = playlist.Href,
                     Uri = playlist.Uri,
                     UserId = userId
+                    //DateCreated = DateTime.Now
                     //Tracks = await playlistTracks.GetPlaylistTrack(spotifyClient, userSpotifyId, playlist.Id)
                 });
             }

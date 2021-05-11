@@ -8,26 +8,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Playlistofy.Models
 {
-    [Table("PlaylistTrackMap")]
-    public partial class PlaylistTrackMap
+    [Table("PlaylistKeywordMap")]
+    public partial class PlaylistKeywordMap
     {
         [Key]
-        [Column("ID")]
         public int Id { get; set; }
         [Required]
-        [Column("PlaylistID")]
+        public int KeywordId { get; set; }
+        [Required]
         [StringLength(450)]
         public string PlaylistId { get; set; }
-        [Required]
-        [Column("TrackID")]
-        [StringLength(450)]
-        public string TrackId { get; set; }
 
+        [ForeignKey(nameof(KeywordId))]
+        [InverseProperty("PlaylistKeywordMaps")]
+        public virtual Keyword Keyword { get; set; }
         [ForeignKey(nameof(PlaylistId))]
-        [InverseProperty("PlaylistTrackMaps")]
+        [InverseProperty("PlaylistKeywordMaps")]
         public virtual Playlist Playlist { get; set; }
-        [ForeignKey(nameof(TrackId))]
-        [InverseProperty("PlaylistTrackMaps")]
-        public virtual Track Track { get; set; }
     }
 }

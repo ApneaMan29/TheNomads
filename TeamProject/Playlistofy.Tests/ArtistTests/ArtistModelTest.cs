@@ -17,7 +17,7 @@ namespace Playlistofy.Tests.ArtistTests
 
             ModelValidator mv = new ModelValidator(a);
 
-            Assert.That(mv.Valid, Is.True);
+            Assert.That(mv.Valid, Is.False);
         }
 
         [Test]

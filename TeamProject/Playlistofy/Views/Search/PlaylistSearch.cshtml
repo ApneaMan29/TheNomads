@@ -28,23 +28,41 @@
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                @if (item.Public == true)
+                {
                     <td>
-                        @Html.DisplayFor(modelItem => item.Name)
+                        Yes
                     </td>
+                }
+                else
+                {
                     <td>
-                        @Html.DisplayFor(modelItem => item.Description)
+                        No
                     </td>
+                }
+                @if (item.Collaborative == true)
+                {
                     <td>
-                        @Html.DisplayFor(modelItem => item.Public)
+                        Yes
                     </td>
+                }
+                else
+                {
                     <td>
-                        @Html.DisplayFor(modelItem => item.Collaborative)
+                        No
                     </td>
-                    <td>
-                        <a asp-controller="Playlists" asp-action="DetailsFromSearch" asp-route-id="@item.Id">Details</a>
-                    </td>
-                </tr>
+                }
+                <td>
+                    <a asp-controller="Playlists" asp-action="DetailsFromSearch" asp-route-id="@item.Id">Details</a>
+                </td>
+            </tr>
             }
         </tbody>
     </table>

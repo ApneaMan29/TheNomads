@@ -1,0 +1,103 @@
+﻿@model Playlistofy.Models.ViewModel.SearchingSpotifyPlaylists
+
+@{
+    ViewData["Title"] = "AddSpotifyPlaylists";
+}
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+
+</head>
+
+<style>
+    table {
+        border-collapse: collapse;
+        border: 1px solid black;
+    }
+
+    th, td {
+        border: 1px solid black;
+    }
+
+    table.b {
+        table-layout: fixed;
+        width: 100%;
+    }
+
+    div.div_a:hover {
+        opacity: 0.7;
+        text-align: center;
+        vertical-align: central;
+        height: 300px;
+        width: 100%;
+        background: url('https://cdn.pixabay.com/photo/2016/08/15/16/48/vinyl-1595847_1280.jpg');
+        background-size: cover;
+        background-position: center;
+        margin-bottom: 20px;
+    }
+
+    div.div_a {
+        opacity: 1.0;
+        text-align: center;
+        vertical-align: central;
+        height: 300px;
+        width: 100%;
+        background: url('https://cdn.pixabay.com/photo/2016/08/15/16/48/vinyl-1595847_1280.jpg');
+        background-size: cover;
+        background-position: center;
+        margin-bottom: 20px;
+    }
+</style>
+
+<body style="background: url('https://cdn.pixabay.com/photo/2019/05/20/10/28/violin-4216384__480.jpg') no-repeat center center fixed !important; background-size: cover !important; height: 100% !important; width: 100% !important; min-height: 100% !important; min-width: 100% !important">
+    <div class="div_a">
+        <h2 class="playlistofyTitle" style="color:darkslategray !important">♫ Add Playlists From Spotify ♫</h2>
+        <h5 class="b" style="background: #060101; color: red">
+            Ever wish you could import any playlist directly from spotify! With this
+            new feature, you will be able to search for any playlist on spotify based
+            on the name of the playlist, artist, or album.
+        </h5>
+    </div>
+
+    <div class="card p-2 m-0  rounded-pill shadow-lg">
+        <form asp-action="AddSpotifyPlaylists">
+            <div class="row">
+                @*<div asp-validation-summary="ModelOnly" class="text-danger"></div>*@
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="input-group w-100 h-100">
+                    <h5 style="padding-left: 25px; padding-top: 5px; width: 16%">Playlist Name: </h5>
+                    <input asp-for="SearchingPlaylistParameter" autocomplete="off" class="form-control" placeholder="Search by playlist, artist, or album name..." />
+                    <button type="submit" id="submit" class="btn rounded btn-outline-primary mr-3" data-toggle="tooltip" title="search" style="height:38px !important">Search</button>
+                </div>
+                <div style="padding-left: 40%"><span asp-validation-for="SearchingPlaylistParameter" class="text-danger"></span></div>
+            </div>
+        </form>
+    </div>
+    @if (Model.SearchingPlaylistParameter != null)
+    {
+    <div class="card mt-5 shadow-sm bg-white">
+        <table class="b">
+            @if (Model.SpotifyPlaylists != null)
+                {
+            <tr>
+                <td><center>Playlist Name</center></td>
+                <td><center># of Songs</center></td>
+                <td><center>Add?</center></td>
+            </tr>
+            @foreach (var playlist in Model.SpotifyPlaylists)
+                    {
+            <tr>
+                <td> <a href=@("https://open.spotify.com/playlist/" + playlist.Id)> @playlist.Name </a></td>
+                <td>
+                    @*@playlist.TrackCount*@
+                </td>
+                <td> <center> <a asp-action="AddSpotifyPlaylists" asp-route-userID="@Model.UserID" asp-route-playlistID="@playlist.Id"> Add </a> </center> </td>
+            </tr>
+                    }
+                }
+        </table>
+    </div>
+    }
+    <center><h3><a asp-controller="Account" asp-action="AccountPage">Done</a></h3></center>
+    <br><br><br><br>
+</body>

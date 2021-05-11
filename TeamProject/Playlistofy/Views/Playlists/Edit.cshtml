@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Edit";
+    var tags = ViewData["Tags"] as List<string>;
 }
 
 <style>
@@ -30,15 +31,15 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" asp-for="Id" />
                     @*<div class="form-group">
-                            <label asp-for="UserId" class="control-label"></label>
-                            <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
-                            <span asp-validation-for="UserId" class="text-danger"></span>
-                        </div>*@
+                <label asp-for="UserId" class="control-label"></label>
+                <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
+                <span asp-validation-for="UserId" class="text-danger"></span>
+            </div>*@
                     @*<div class="form-group">
-                            <label asp-for="Href" class="control-label"></label>
-                            <input asp-for="Href" class="form-control" />
-                            <span asp-validation-for="Href" class="text-danger"></span>
-                        </div>*@
+                <label asp-for="Href" class="control-label"></label>
+                <input asp-for="Href" class="form-control" />
+                <span asp-validation-for="Href" class="text-danger"></span>
+            </div>*@
                     <div class="form-group">
                         <label asp-for="Name" class="control-label"></label>
                         <input style="height:40px; width:350px;" asp-for="Name" class="form-control" />
@@ -59,13 +60,48 @@
                         <textarea rows="5" cols="35" asp-for="Description" class="form-control" placeholder="Enter description here..."></textarea>
                         <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
+                    <div class="form-group row">
+                        <div class="col-md">
+                            <label class="control-label">Tags</label>
+                            <input type="text" name="searchTerm" id="searchTerm" class="form-control" placeholder="Add New Tags Here..." pattern=".{2,}" required title="2 characters minimum" />
+                            <input type="hidden" id="itemId" name="itemId" />
+                        </div>
+                        <div class="col-md">
+                            <table class="b">
+                                <thead>
+                                    <tr>
+                                        <th>Existing Tags</th>
+                                    </tr>
+                                </thead>
+                                @foreach (var i in tags)
+                                {
+                                    <tr>
+                                        <td>
+                                            @i
+                                        </td>
+                                        @if (i.StartsWith("#"))
+                                        {
+                                            <td>
+                                                <a asp-action="RemoveHashMap" asp-route-key="@i" asp-route-id="@Model.Id">Delete</a>
+                                            </td>
+                                        } else
+                                        {
+                                            <td>
+                                                <a asp-action="RemoveKeyMap" asp-route-key="@i"  asp-route-id="@Model.Id">Delete</a>
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                    </div>
                     @*<div class="form-group">
-                            <label asp-for="Uri" class="control-label"></label>
-                            <input asp-for="Uri" class="form-control" />
-                            <span asp-validation-for="Uri" class="text-danger"></span>
-                        </div>*@
+                <label asp-for="Uri" class="control-label"></label>
+                <input asp-for="Uri" class="form-control" />
+                <span asp-validation-for="Uri" class="text-danger"></span>
+            </div>*@
                     <div class="form-group">
-                        <input type="submit" value="Save" class="btn btn-primary" asp-route-UserId="@Model.UserId" asp-route-PlaylistId="@Model.Id"/>
+                        <input type="submit" value="Save" class="btn btn-primary" asp-route-UserId="@Model.UserId" asp-route-PlaylistId="@Model.Id" />
                     </div>
                 </form>
                 <center>
@@ -75,6 +111,11 @@
                 </center>
                 @section Scripts {
                     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+                    <script src="~/js/site.js" asp-append-version="true"></script>
+                    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.0.min.js" type="text/javascript"></script>
+                    <script src="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js" type="text/javascript"></script>
+                    <link href="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/blitzer/jquery-ui.css"
+                          rel="Stylesheet" type="text/css" />
                 }
             </td>
         </tr>

@@ -57,20 +57,18 @@ namespace Playlistofy.Controllers
                 return NotFound();
             }
 
-            var track = _tRepo.GetAllWithTrackMap().Where(i => i.Id == id).FirstOrDefault();
-            var trackAlbum = _tRepo.GetAllWithTrackAlbumMap();
+            var track = _tRepo.GetAllWithTrackMap().Include("TrackAlbumMaps").Where(i => i.Id == id).FirstOrDefault();
+
             if (track == null)
             {
                 return NotFound();
             }
             List<Album> albums = new List<Album>();
-            foreach (var i in trackAlbum)
-            {
-                foreach (var j in i.TrackAlbumMaps)
-                {
-                    albums.Add(await _alRepo.FindByIdAsync(j.AlbumId));
-                }
-            };
+            foreach(var j in track.TrackAlbumMaps)
+            { 
+                Album a = await _alRepo.FindByIdAsync(j.AlbumId);
+                albums.Add(a);
+            }
             var InfoForTracksModel = new InfoForTracks
             {
                 Track = track,

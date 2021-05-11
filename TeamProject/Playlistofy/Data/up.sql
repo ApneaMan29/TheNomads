@@ -110,6 +110,21 @@ CREATE TABLE [AlbumArtistMap]
 )
 GO
 
+CREATE TABLE [Keyword]
+(
+    [Id] INT NOT NULL IDENTITY (1,1),
+    [Keyword] NVARCHAR(450) NOT NULL
+)
+GO
+
+CREATE TABLE [PlaylistKeywordMap]
+(
+    [Id] INT NOT NULL IDENTITY (1,1),
+    [KeywordId] INT NOT NULL,
+    [PlaylistId] NVARCHAR(450) NOT NULL
+)
+GO
+
 CREATE TABLE [FollowedPlaylist]
 (
     [Id] INT NOT NULL IDENTITY (1,1),
@@ -117,16 +132,6 @@ CREATE TABLE [FollowedPlaylist]
     [PUserId] NVARCHAR(450)
 )
 GO
-
-ALTER TABLE [FollowedPlaylist] ADD CONSTRAINT [PK_FollowedPlaylist] PRIMARY KEY CLUSTERED ([Id]ASC)
-GO
-
-ALTER TABLE [FollowedPlaylist] ADD CONSTRAINT [FollowedPlaylist_FK_Playlist] FOREIGN KEY ([PlaylistID]) REFERENCES [Playlist] ([Id])
-GO
-
-ALTER TABLE [FollowedPlaylist] ADD CONSTRAINT [FollowedPlaylist_FK_PUser] FOREIGN KEY ([PUserId]) REFERENCES [PUser] ([Id])
-GO
-
 
 ALTER TABLE [PUser] ADD CONSTRAINT [PK_PUser] PRIMARY KEY CLUSTERED ([Id] ASC)
 GO
@@ -140,13 +145,7 @@ GO
 ALTER TABLE [Album] ADD CONSTRAINT [PK_Album] PRIMARY KEY CLUSTERED ([Id] ASC)
 GO
 
-ALTER TABLE [TrackAlbumMap] ADD CONSTRAINT [TrackAlbumMap_PK] PRIMARY KEY CLUSTERED ([Id] ASC)
-GO
-
-ALTER TABLE [PlaylistTrackMap] ADD CONSTRAINT [PlaylistTrackMap_PK] PRIMARY KEY CLUSTERED ([Id] ASC)
-GO
-
-ALTER TABLE [AlbumArtistMap] ADD CONSTRAINT [AlbumArtistMap_PK] PRIMARY KEY CLUSTERED ([Id] ASC)
+ALTER TABLE [Keyword] ADD CONSTRAINT [PK_Keyword] PRIMARY KEY CLUSTERED ([Id] ASC)
 GO
 
 ALTER TABLE [TrackAlbumMap] ADD CONSTRAINT [TrackAlbumMap_PK] PRIMARY KEY CLUSTERED ([Id] ASC)
@@ -156,6 +155,22 @@ ALTER TABLE [PlaylistTrackMap] ADD CONSTRAINT [PlaylistTrackMap_PK] PRIMARY KEY 
 GO
 
 ALTER TABLE [AlbumArtistMap] ADD CONSTRAINT [AlbumArtistMap_PK] PRIMARY KEY CLUSTERED ([Id] ASC)
+GO
+
+ALTER TABLE [TrackAlbumMap] ADD CONSTRAINT [TrackAlbumMap_PK] PRIMARY KEY CLUSTERED ([Id] ASC)
+GO
+
+ALTER TABLE [PlaylistTrackMap] ADD CONSTRAINT [PlaylistTrackMap_PK] PRIMARY KEY CLUSTERED ([Id] ASC)
+GO
+
+ALTER TABLE [AlbumArtistMap] ADD CONSTRAINT [AlbumArtistMap_PK] PRIMARY KEY CLUSTERED ([Id] ASC)
+GO
+
+ALTER TABLE [FollowedPlaylist] ADD CONSTRAINT [PK_FollowedPlaylist] PRIMARY KEY CLUSTERED ([Id] ASC)
+GO
+
+
+ALTER TABLE [PlaylistKeywordMap] ADD CONSTRAINT [PK_PlaylistKeywordMap] PRIMARY KEY CLUSTERED ([Id] ASC)
 GO
 
 ALTER TABLE [Playlist] ADD CONSTRAINT [Playlist_FK_PUser] FOREIGN KEY ([UserId]) REFERENCES [PUser] ([ID])
@@ -183,4 +198,16 @@ ALTER TABLE [AlbumArtistMap] ADD CONSTRAINT [AlbumArtistMap_FK_Artist] FOREIGN K
 GO
 
 ALTER TABLE [AlbumArtistMap] ADD CONSTRAINT [AlbumArtistMap_FK_Album] FOREIGN KEY ([AlbumId]) REFERENCES [Album] ([ID])
+GO
+
+ALTER TABLE [PlaylistKeywordMap] ADD CONSTRAINT [PlaylistKeyMap_FK_Keyword] FOREIGN KEY ([KeywordId]) REFERENCES [Keyword] ([Id])
+GO
+
+ALTER TABLE [PlaylistKeywordMap] ADD CONSTRAINT [PlaylistKeyMap_FK_Playlist] FOREIGN KEY ([PlaylistId]) REFERENCES [Playlist] ([Id])
+GO
+
+ALTER TABLE [FollowedPlaylist] ADD CONSTRAINT [FollowedPlaylist_FK_Playlist] FOREIGN KEY ([PlaylistId]) REFERENCES [Playlist] ([Id])
+GO
+
+ALTER TABLE [FollowedPlaylist] ADD CONSTRAINT [FollowedPlaylist_FK_PUser] FOREIGN KEY ([PUserId]) REFERENCES [PUser] ([Id])
 GO

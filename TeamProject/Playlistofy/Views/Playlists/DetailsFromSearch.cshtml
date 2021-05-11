@@ -48,7 +48,6 @@
                     <table class="b" style="table-layout:fixed">
                         <tr>
                             <td>
-                                @*<h4>@Html.DisplayNameFor(model => model.Playlist.Id)</h4>*@
                                 <h5>Playlist ID - @Html.DisplayFor(model => model.Playlist.Id)</h5>
                             </td>
                         </tr>
@@ -58,7 +57,14 @@
                         <tr></tr>
                         <tr>
                             <td>
-                                <h5>Is @Html.DisplayNameFor(model => model.Playlist.Public)?  @Html.DisplayFor(model => model.Playlist.Public)</h5>
+                                @if (@Html.ViewData.Model.Playlist.Public != null && (bool)@Html.ViewData.Model.Playlist.Public)
+                                {
+                                    <h5>Public</h5>
+                                }
+                                else
+                                {
+                                    <h5>Private</h5>
+                                }
                             </td>
                         </tr>
                         <tr></tr>
@@ -67,7 +73,14 @@
                         <tr></tr>
                         <tr>
                             <td>
-                                <h5>Is @Html.DisplayNameFor(model => model.Playlist.Collaborative)?  @Html.DisplayFor(model => model.Playlist.Collaborative)</h5>
+                                @if (@Html.ViewData.Model.Playlist.Collaborative != null && (bool)@Html.ViewData.Model.Playlist.Collaborative)
+                                {
+                                    <h5>Collaborative</h5>
+                                }
+                                else
+                                {
+                                    <h5>Single Creator</h5>
+                                }
                             </td>
                         </tr>
                         <tr></tr>
@@ -76,11 +89,34 @@
                         <tr></tr>
                         <tr>
                             <td>
-                                @*<h4>@Html.DisplayNameFor(model => model.Playlist.Description)</h4>*@
-                                <h5>Description</h5>
-                                <h5>@Html.DisplayFor(model => model.Playlist.Description)</h5>
+                                <h3>Description</h3>
+                                @if (@Html.ViewData.Model.Playlist.Description != null)
+                                {
+                                    <h5>@Html.ViewData.Model.Playlist.Description</h5>
+                                }
+                                else
+                                {
+                                    <h5>There is no description for this playlist</h5>
+                                }
                             </td>
                         </tr>
+                        <tr></tr>
+                        <tr></tr>
+                        <tr></tr>
+                        <tr></tr>
+                        <tr>
+                            <td>
+                                <h3>Tags</h3>
+                            </td>
+                        </tr>
+                        @foreach (var word in Model.Tags)
+                        {
+                            <tr>
+                                <td>
+                                    <h5>@word</h5>
+                                </td>
+                            </tr>
+                        }
                     </table>
                 </div>
             </td>
@@ -94,7 +130,6 @@
                             <tr>
                                 <th>Title</th>
                                 <th>Length</th>
-                                @*<th>URL</th>*@
                             </tr>
                             @foreach (var track in Model.Tracks)
                             {
@@ -109,11 +144,6 @@
                                             @track.Duration
                                         </a>
                                     </td>
-                                    <td>
-                                        <a asp-controller="Tracks" asp-action="Delete" asp-route-TrackId="@track.Id" asp-route-PlaylistId="@Model.Playlist.Id">
-                                            Delete
-                                        </a>
-                                    </td>
                                 </tr>
                             }
                         }
@@ -123,7 +153,7 @@
                                 <td>
                                     <center>
                                         <h4>There Are No Tracks In This Playlist</h4>
-                                        <a asp-controller="Tracks" asp-action="SearchTracks" asp-route-id="@Model.Playlist.Id">Add Tracks?</a>
+                                        <!--<a asp-controller="Tracks" asp-action="SearchTracks" asp-route-id="@Model.Playlist.Id">Add Tracks?</a>-->
                                     </center>
                                 </td>
                             </tr>

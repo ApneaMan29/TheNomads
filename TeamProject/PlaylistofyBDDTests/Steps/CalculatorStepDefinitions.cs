@@ -1,4 +1,5 @@
-﻿using TechTalk.SpecFlow;
+﻿using NUnit.Framework;
+using TechTalk.SpecFlow;
 
 namespace PlaylistofyBDDTests.Steps
 {
@@ -9,6 +10,9 @@ namespace PlaylistofyBDDTests.Steps
         // For additional details on SpecFlow step definitions see https://go.specflow.org/doc-stepdef
 
         private readonly ScenarioContext _scenarioContext;
+        private int FirstNumber;
+        private int SecondNumber;
+        private int result;
 
         public CalculatorStepDefinitions(ScenarioContext scenarioContext)
         {
@@ -24,7 +28,7 @@ namespace PlaylistofyBDDTests.Steps
             // additional string/Table parameters can be defined on the step definition
             // method. 
 
-            _scenarioContext.Pending();
+            FirstNumber = number;
         }
 
         [Given("the second number is (.*)")]
@@ -36,7 +40,7 @@ namespace PlaylistofyBDDTests.Steps
             // additional string/Table parameters can be defined on the step definition
             // method. 
 
-            _scenarioContext.Pending();
+            SecondNumber = number;
         }
 
         [When("the two numbers are added")]
@@ -44,7 +48,7 @@ namespace PlaylistofyBDDTests.Steps
         {
             //TODO: implement act (action) logic
 
-            _scenarioContext.Pending();
+            result = FirstNumber + SecondNumber;
         }
 
         [Then("the result should be (.*)")]
@@ -52,7 +56,7 @@ namespace PlaylistofyBDDTests.Steps
         {
             //TODO: implement assert (verification) logic
 
-            _scenarioContext.Pending();
+            Assert.That(result, Is.EqualTo(this.result));
         }
     }
 }

@@ -71,6 +71,37 @@ namespace Playlistofy.Data.Concrete
             return map;
         }
 
+        public async Task<List<Playlist>> GetMostRecentPlaylists_5Async()
+        {
+            var playlists = new List<Playlist>();
+
+            var DBplaylist = await _dbSet.Include("PlaylistTrackMaps").ToListAsync();
+            var list = DBplaylist.OrderBy(t => t.DateCreated);
+            var countPlaylist = list.Count();
+
+            for (int i = 0; i < 5; i++)
+            {
+                --countPlaylist;
+                var playlist = list.ElementAtOrDefault(countPlaylist);
+                playlists.Add(playlist);
+            }
+
+            return playlists;
+        }
+
+        public Playlist GetPlaylistWithAllMaps(string id)
+        {
+            Playlist playlist = _dbSet.Include("PlaylistTrackMaps").Include("PlaylistKeywordMaps").Include("PlaylistHashtagMaps").Include("FollowedPlaylists").Where(i => i.Id == id).FirstOrDefault();
+            return playlist;
+        }
+
+        public async Task RemoveFollowedPlaylist(int Id)
+        {
+            FollowedPlaylist follow = _context.Set<FollowedPlaylist>().Find(Id);
+            _context.Remove<FollowedPlaylist>(follow);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task AddTrackPlaylistMap(string pUId, string pId)
         {
             _context.Add(new FollowedPlaylist()

@@ -32,14 +32,14 @@ namespace Playlistofy.Controllers
         private readonly IPlaylistofyUserRepository _pURepo;
         private readonly IPlaylistRepository _pRepo;
         private readonly ITrackRepository _tRepo;
-
+        private readonly IArtistRepository _arRepo;
+        private readonly IAlbumRepository _aRepo;
+        private readonly IHashtagRepository _hRepo;
+        private readonly IKeywordRepository _kRepo;
         private static string _spotifyClientId;
         private static string _spotifyClientSecret;
 
-        private readonly IArtistRepository _arRepo;
-        private readonly IAlbumRepository _aRepo;
-
-        public HomeController(ILogger<HomeController> logger, IConfiguration config, UserManager<IdentityUser> userManager, IPlaylistofyUserRepository pURepo, IPlaylistRepository pRepo, ITrackRepository tRepo, IAlbumRepository aRepo, IArtistRepository arRepo)
+        public HomeController(ILogger<HomeController> logger, IConfiguration config, UserManager<IdentityUser> userManager, IPlaylistofyUserRepository pURepo, IPlaylistRepository pRepo, ITrackRepository tRepo, IAlbumRepository aRepo, IArtistRepository arRepo, IHashtagRepository hRepo, IKeywordRepository kRepo)
         {
             _userManager = userManager;
             _logger = logger;
@@ -49,13 +49,21 @@ namespace Playlistofy.Controllers
             _tRepo = tRepo;
             _aRepo = aRepo;
             _arRepo = arRepo;
+            _hRepo = hRepo;
+            _kRepo = kRepo;
             _spotifyClientId = config["Spotify:ClientId"];
             _spotifyClientSecret = config["Spotify:ClientSecret"];
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> IndexAsync()
         {
-            if(_userManager.GetUserId(User) != null)
+            var UserPlaylistPlaylist = new HomePageViewModel();
+
+            UserPlaylistPlaylist.UserID = _userManager.GetUserId(User);
+
+            UserPlaylistPlaylist.RecentPlaylists = await _pRepo.GetMostRecentPlaylists_5Async();
+
+            if (_userManager.GetUserId(User) != null)
             {
                 //var uD = new UserData(_config, _userManager, _pURepo, _pRepo, _tRepo, _aRepo, _arRepo, _userManager.GetUserAsync(User).Result);
 
@@ -64,10 +72,79 @@ namespace Playlistofy.Controllers
                 var tempUser = _userManager.GetUserId(User);
                 var newPlaylist = _pRepo.GetAll().Include("PlaylistTrackMaps").Where(name => name.UserId == tempUser).ToList();
 
-                return View(newPlaylist);
+                UserPlaylistPlaylist.UserPlaylists = newPlaylist;
             }
 
-            return View(new List<Playlist>());
+            return View(UserPlaylistPlaylist);
+            //return View(new List<Playlist>());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> IndexAsync([Bind("SearchingPlaylistParameter")] HomePageViewModel viewModel)
+        {
+            var UserPlaylistPlaylist = new HomePageViewModel();
+
+            if (_userManager.GetUserId(User) != null)
+            {
+                //var uD = new UserData(_config, _userManager, _pURepo, _pRepo, _tRepo, _aRepo, _arRepo, _userManager.GetUserAsync(User).Result);
+
+                //await uD.SetUserData();
+
+                var tempUser = _userManager.GetUserId(User);
+                var newPlaylist = _pRepo.GetAll().Include("PlaylistTrackMaps").Where(name => name.UserId == tempUser).ToList();
+
+                UserPlaylistPlaylist.UserPlaylists = newPlaylist;
+            }
+
+            //Checks if the model coming in is valid with the specified parameter
+            if (ModelState.IsValid)
+            {
+                //Gets the current logged in user's ID, where it will be passed to the view. If null then, certain features won't work
+                UserPlaylistPlaylist.UserID = _userManager.GetUserId(User);
+
+                //If the search parameter coming in is null, then this will fail
+                if (viewModel.SearchingPlaylistParameter != null || viewModel.SearchingPlaylistParameter.Length >= 1)
+                {
+                    //Get's the playlists depending on the searched parameter
+                    var searchedPlaylists = _pRepo.FindPlaylistsBySearch(viewModel.SearchingPlaylistParameter);
+
+                    //Create new list of strings that will hold the user for each playlist. Different ways of doing this, and not the best way, cause I essentially have to lists
+                    var UserNameList = new List<string>();
+
+                    //Counter so that no more than 5 playlists will be rendered at a time
+                    var count = 0;
+                    foreach (var playlist in searchedPlaylists)
+                    {
+                        //Once it hits 5 it will break
+                        if (count > 4) { break; }
+
+                        // If the playlist does not equal nyull then it will pull the userId from every playlist and then use that to find the user
+                        // Once finding the user, we can extract the email out of it
+                        if (playlist != null)
+                        {
+                            var userId = playlist.UserId;
+                            var playlistUser = await _userManager.FindByIdAsync(userId);
+                            if (playlistUser?.Email != null) {
+                                UserNameList.Add(playlistUser.Email);
+                            } else {
+                                UserNameList.Add("No user for this playlist");
+                            }
+                        }
+                        ++count;
+                    }
+                    //List of the users that were found in the above code are stored in this list
+                    UserPlaylistPlaylist.SearchedPlaylistsUsers = UserNameList;
+
+                    //List of the actual playlists with set information except the user email of the one who created them. Hence the list above does this
+                    UserPlaylistPlaylist.SearchedPlaylists = searchedPlaylists;
+                }
+                UserPlaylistPlaylist.RecentPlaylists = await _pRepo.GetMostRecentPlaylists_5Async();
+                return View(UserPlaylistPlaylist);
+            }
+            UserPlaylistPlaylist.RecentPlaylists = await _pRepo.GetMostRecentPlaylists_5Async();
+
+            return View(UserPlaylistPlaylist);
         }
 
         public async Task<IActionResult> SpotifyProfile()
@@ -163,6 +240,93 @@ namespace Playlistofy.Controllers
 
             viewModel._PlaylistsDB = await userPlaylists.ToListAsync();
             return View("WebPlayer", viewModel);
+        }
+        [HttpPost]
+        public JsonResult AutoComplete(string prefix, string searchType)
+        {
+            if (searchType == "Album")
+            {
+                var albums = _aRepo.GetAll().Where(i => i.Name.StartsWith(prefix));
+                var words = new List<ModelforAuto>();
+                foreach(var a in albums)
+                {
+                    words.Add(new ModelforAuto()
+                    {
+                        Id = a.Id,
+                        Label = a.Name
+                    });
+                }
+                return Json(words);
+            }
+            else if (searchType == "Playlist")
+            {
+                var playlists = _pRepo.GetAll().Where(i => i.Name.StartsWith(prefix));
+                var words = new List<ModelforAuto>();
+                foreach (var a in playlists)
+                {
+                    words.Add(new ModelforAuto()
+                    {
+                        Id = a.Id,
+                        Label = a.Name
+                    });
+                }
+                return Json(words);
+            }
+            else if (searchType == "Track")
+            {
+                var tracks = _tRepo.GetAll().Where(i => i.Name.StartsWith(prefix));
+                var words = new List<ModelforAuto>();
+                foreach (var a in tracks)
+                {
+                    words.Add(new ModelforAuto()
+                    {
+                        Id = a.Id,
+                        Label = a.Name
+                    });
+                }
+                return Json(words);
+            }
+            else if (searchType == "Artist")
+            {
+                var artists = _arRepo.GetAll().Where(i => i.Name.StartsWith(prefix));
+                var words = new List<ModelforAuto>();
+                foreach (var a in artists)
+                {
+                    words.Add(new ModelforAuto()
+                    {
+                        Id = a.Id,
+                        Label = a.Name
+                    });
+                }
+                return Json(words);
+            }
+            else if (searchType == "Tags")
+            {
+                var hash = _hRepo.GetAll().Where(i => i.HashTag1.StartsWith(prefix));
+                var key = _kRepo.GetAll().Where(i => i.Keyword1.StartsWith(prefix));
+                var words = new List<TagsModel>();
+                foreach (var h in hash)
+                {
+                    words.Add(new TagsModel()
+                    {
+                        Id = h.Id,
+                        label = h.HashTag1
+                    });
+                }
+                foreach (var k in key)
+                {
+                    words.Add(new TagsModel()
+                    {
+                        Id = k.Id,
+                        label = k.Keyword1
+                    });
+                }
+
+                return Json(words);
+            }else
+            {
+                return null;
+            }
         }
 
         public async void FollowPlaylist(string id)

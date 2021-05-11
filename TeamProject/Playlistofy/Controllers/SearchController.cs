@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Playlistofy.Data.Abstract;
+using Playlistofy.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,13 +15,17 @@ namespace Playlistofy.Controllers
         private readonly ITrackRepository _tRepo;
         private readonly IAlbumRepository _aRepo;
         private readonly IArtistRepository _arRepo;
+        private readonly IKeywordRepository _kRepo;
+        private readonly IHashtagRepository _hRepo;
 
-        public SearchController(IPlaylistRepository pRepo, ITrackRepository tRepo, IAlbumRepository aRepo, IArtistRepository arRepo)
+        public SearchController(IPlaylistRepository pRepo, ITrackRepository tRepo, IAlbumRepository aRepo, IArtistRepository arRepo, IKeywordRepository kRepo, IHashtagRepository hRepo)
         {
             _pRepo = pRepo;
             _tRepo = tRepo;
             _aRepo = aRepo;
             _arRepo = arRepo;
+            _kRepo = kRepo;
+            _hRepo = hRepo;
         }
 
         public ActionResult Search(string searchType, string searchQuery)
@@ -39,6 +44,9 @@ namespace Playlistofy.Controllers
             else if (searchType == "Artist")
             {
                 return RedirectToAction("ArtistSearch", new { searchTerm = searchQuery });
+            }else if (searchType == "Tags")
+            {
+                return RedirectToAction("TagSearch", new { searchTerm = searchQuery });
             }
             return View();
         }
@@ -64,6 +72,49 @@ namespace Playlistofy.Controllers
         {
             var a = _aRepo.FindAlbumsBySearch(searchTerm);
             return View(a);
+        }
+
+        public ViewResult TagSearch(string searchTerm)
+        {
+            string[] list = searchTerm.Split(',', ' ');
+            List<string> kwList = list.ToList();
+            List<Playlist> playlists = new List<Playlist>();
+            foreach (var word in kwList)
+            {
+                if (word.Length > 0)
+                {
+                    if (word.StartsWith("#"))
+                    {
+                        if (_hRepo.FindByHashtag(word) != null)
+                        {
+                            List<Playlist> templist = _hRepo.SearchForPlaylist(word);
+                            foreach (Playlist p in templist)
+                            {
+                                if (!playlists.Contains(p))
+                                {
+                                    playlists.Add(p);
+                                }
+                            }
+                        }
+                        
+                    }
+                    else
+                    {
+                        if (_kRepo.FindByKeyword(word) != null)
+                        {
+                            List<Playlist> templist = _kRepo.SearchForPlaylist(word);
+                            foreach (Playlist p in templist)
+                            {
+                                if (!playlists.Contains(p))
+                                {
+                                    playlists.Add(p);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return View("PlaylistSearch", playlists);
         }
     }
 }
