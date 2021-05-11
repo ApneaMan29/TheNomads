@@ -15,6 +15,7 @@ namespace Playlistofy.Data.Abstract
         public Task DeleteTrackMapAsync(PlaylistTrackMap trackMap);
         public PlaylistTrackMap GetPlaylistTrackMap(string tId, string pId);
         public Task AddTrackPlaylistMap(string pUId, string pId);
+        public Task DeletePlaylistMap(FollowedPlaylist followedMap);
     }
 
     

@@ -176,5 +176,11 @@ namespace Playlistofy.Controllers
             await _pRepo.AddTrackPlaylistMap(usr.Id, id);
         }
 
+        public async void UnfollowPlaylist(FollowedPlaylist fP)
+        {
+            await _pRepo.DeletePlaylistMap(fP);
+        }
+
+
     }
 }

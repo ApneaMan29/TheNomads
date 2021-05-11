@@ -11,10 +11,12 @@ namespace Playlistofy.Data.Concrete
     public class PlaylistRepository : Repository<Playlist>, IPlaylistRepository
     {
         private DbSet<PlaylistTrackMap> trackMaps;
+        private DbSet<FollowedPlaylist> playlistMaps;
 
         public PlaylistRepository(SpotifyDbContext ctx) : base(ctx)
         {
             trackMaps = _context.Set<PlaylistTrackMap>();
+            playlistMaps = _context.Set<FollowedPlaylist>();
         }
 
         public List<Playlist> FindPlaylistsBySearch(string searchQuery)
@@ -78,5 +80,17 @@ namespace Playlistofy.Data.Concrete
             });
             await _context.SaveChangesAsync();
         }
+
+        public virtual async Task DeletePlaylistMap(FollowedPlaylist pMap)
+        {
+            if (pMap == null)
+            {
+                throw new Exception("Entity to delete was null");
+            }
+
+            playlistMaps.Remove(pMap);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

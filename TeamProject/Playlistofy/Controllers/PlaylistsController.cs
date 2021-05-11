@@ -113,7 +113,12 @@ namespace Playlistofy.Controllers
             {
                 return NotFound();
             }
-            
+
+            var usr = GetCurrentUserAsync();
+            if (usr == null)
+            {
+                return NotFound();
+            }
             var playlist = _pRepo.GetAllWithUser().Where(i => i.Id == id).FirstOrDefault();
             if (playlist == null)
             {
@@ -130,7 +135,8 @@ namespace Playlistofy.Controllers
             var TracksForPlaylistModel = new TracksForPlaylist
             {
                 Playlist = playlist,
-                Tracks = Tracks
+                Tracks = Tracks,
+                PUser = _puRepo.GetPUserByID(usr.Result.Id)
             };
             return View(TracksForPlaylistModel);
         }

@@ -28,8 +28,17 @@
         <div class="centered">
             <iframe src="https://open.spotify.com/embed/playlist/@Html.ViewData.Model.Playlist.Id" width="750" height="175" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
         </div>
-
-        <h4>(Details)</h4>
+        <div class="d-flex justify-content-between">
+            @if (Model.Playlist.Id != Model.PUser.FollowedPlaylists.GetEnumerator().Current.PlaylistId)
+            {
+                <a class="h4 button-container" asp-controller="Home" asp-action="FollowPlaylist" asp-route-id="@Model.Playlist.Id">Follow Playlist</a>
+            }
+            else
+            {
+                <a class="h4 button-container text-dark" asp-controller="Home" asp-action="UnfollowPlaylist" asp-route-id="@Model.Playlist.PlaylistTrackMaps.GetEnumerator().Current.Id">Unfollow Playlist</a>
+            }
+            <h4>(Playlist Details Below)</h4>
+        </div>
     </div>
     <hr />
     <table class="b">
