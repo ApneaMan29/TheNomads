@@ -80,13 +80,11 @@ namespace PlaylistofyBDDTests.Features
 #line 3
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Id",
                         "UserName",
                         "Password"});
             table2.AddRow(new string[] {
-                        "24ccdc1f-565c-42ec-80ca-8e6c0799229c",
-                        "TestNoSpotify@TestCase.DOGE",
-                        ")ddnbi5==DWqz!P"});
+                        "bspencer16@mail.wou.edu",
+                        "yDjLwy97hDxVUs!"});
 #line 4
  testRunner.Given("the following user", ((string)(null)), table2, "Given ");
 #line hidden
@@ -128,7 +126,7 @@ this.FeatureBackground();
  testRunner.Given("the user is logged in", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 11
- testRunner.And("in the \"AddSpotifyPlaylist\" view page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("in the AddSpotifyPlaylist view page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 12
  testRunner.When("the user clicks on the button named Browse Playlists", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");

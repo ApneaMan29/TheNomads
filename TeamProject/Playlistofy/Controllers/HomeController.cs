@@ -352,7 +352,6 @@ namespace Playlistofy.Controllers
 
         public async Task<IActionResult> LikePlaylist(string DispName, string pId)
         {
-
             await _pRepo.LikePlaylist(DispName, pId);
             return RedirectToAction("DetailsFromSearch", "Playlists", new { id = pId });
         }
